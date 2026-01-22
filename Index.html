@@ -1,0 +1,160 @@
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8" /&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1" /&gt;
+  &lt;title&gt;Fruit &amp; Juice Delivery Form&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .item-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .item-row input {
+      flex: 1;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 16px;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #addItemBtn {
+      background-color: #2196F3;
+      margin-top: 10px;
+    }
+    #addItemBtn:hover {
+      background-color: #0b7dda;
+    }
+    .result {
+      margin-top: 30px;
+      background: #e7ffe7;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #b2d8b2;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  <h2>Fruit &amp; Juice Home Delivery Form</h2>
+
+  &lt;form id="deliveryForm"&gt;
+    &lt;label for="customerName"&gt;Full Name&lt;/label&gt;
+    &lt;input type="text" id="customerName" name="customerName" required /&gt;
+
+    &lt;label for="phone"&gt;Phone Number&lt;/label&gt;
+    &lt;input type="text" id="phone" name="phone" required /&gt;
+
+    &lt;label for="address"&gt;Delivery Address&lt;/label&gt;
+    &lt;input type="text" id="address" name="address" required /&gt;
+
+    &lt;label for="deliveryDate"&gt;Preferred Delivery Date&lt;/label&gt;
+    &lt;input type="date" id="deliveryDate" name="deliveryDate" required /&gt;
+
+    &lt;label for="deliveryTime"&gt;Preferred Delivery Time&lt;/label&gt;
+    &lt;input type="time" id="deliveryTime" name="deliveryTime" required /&gt;
+
+    &lt;label&gt;Order Items&lt;/label&gt;
+    &lt;div id="itemsContainer"&gt;
+      &lt;div class="item-row"&gt;
+        &lt;input type="text" name="itemName[]" placeholder="Item Name (e.g., Apples)" required /&gt;
+        &lt;input type="number" name="itemWeight[]" placeholder="Weight (kg)" min="0.1" step="0.1" required /&gt;
+      
+    
+    &lt;button type="button" id="addItemBtn"&gt;Add Another Item&lt;/button&gt;
+
+    &lt;button type="submit"&gt;Submit Order&lt;/button&gt;
+  &lt;/form&gt;
+
+  &lt;div id="result" class="result" style="display:none;"&gt;
+
+  &lt;script&gt;
+    const addItemBtn = document.getElementById('addItemBtn');
+    const itemsContainer = document.getElementById('itemsContainer');
+    const deliveryForm = document.getElementById('deliveryForm');
+    const resultDiv = document.getElementById('result');
+
+    addItemBtn.addEventListener('click', () =&gt; {
+      const itemRow = document.createElement('div');
+      itemRow.className = 'item-row';
+      itemRow.innerHTML = `
+        &lt;input type="text" name="itemName[]" placeholder="Item Name (e.g., Bananas)" required /&gt;
+        &lt;input type="number" name="itemWeight[]" placeholder="Weight (kg)" min="0.1" step="0.1" required /&gt;
+      `;
+      itemsContainer.appendChild(itemRow);
+    });
+
+    deliveryForm.addEventListener('submit', (e) =&gt; {
+      e.preventDefault();
+
+      const formData = new FormData(deliveryForm);
+      const customerName = formData.get('customerName');
+      const phone = formData.get('phone');
+      const address = formData.get('address');
+      const deliveryDate = formData.get('deliveryDate');
+      const deliveryTime = formData.get('deliveryTime');
+      const itemNames = formData.getAll('itemName[]');
+      const itemWeights = formData.getAll('itemWeight[]');
+
+      let orderSummary = `<h3>Order Summary</h3>`;
+      orderSummary += `<p><strong>Name:</strong> ${customerName}</p>`;
+      orderSummary += `<p><strong>Phone:</strong> ${phone}</p>`;
+      orderSummary += `<p><strong>Address:</strong> ${address}</p>`;
+      orderSummary += `<p><strong>Delivery Date &amp; Time:</strong> ${deliveryDate} at ${deliveryTime}</p>`;
+      orderSummary += `<h4>Items:</h4><ul>`;
+
+      for (let i = 0; i &lt; itemNames.length; i++) {
+        orderSummary += `<li>${itemNames[i]} - ${itemWeights[i]} kg</li>`;
+      }
+      orderSummary += `</ul>`;
+
+      resultDiv.innerHTML = orderSummary;
+      resultDiv.style.display = 'block';
+
+      deliveryForm.reset();
+      // Remove extra item rows except the first
+      while (itemsContainer.children.length &gt; 1) {
+        itemsContainer.removeChild(itemsContainer.lastChild);
+      }
+    });
+  &lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
